@@ -21,6 +21,29 @@ class Scanner {
     // the line tracks what source line current is on
     private int line = 1;
 
+    // store the reserved keywords
+    private static final Map<String, TokenType> keywords;
+
+    static {
+        keywords = new HashMap<>();
+        keywords.put("and", AND);
+        keywords.put("class", CLASS);
+        keywords.put("else", ELSE);
+        keywords.put("false", FALSE);
+        keywords.put("for", FOR);
+        keywords.put("fun", FUN);
+        keywords.put("if", IF);
+        keywords.put("nil", NIL);
+        keywords.put("or", OR);
+        keywords.put("print", PRINT);
+        keywords.put("return", RETURN);
+        keywords.put("super", SUPER);
+        keywords.put("this", THIS);
+        keywords.put("true", TRUE);
+        keywords.put("var", VAR);
+        keywords.put("while", WHILE);
+    }
+
     // create the scanner based on a source string
     Scanner(String source) {
         this.source = source;
@@ -112,13 +135,45 @@ class Scanner {
                 string();
                 break;
             default:
+                // to recognize number literals
                 if (isDigit(c)) {
                     number();
+                    // to recognize identifiers
+                } else if (isAlpha(c)) {
+                    identifier();
                 } else {
                     Lox.error(line, "Unexpected character.");
                 }
                 break;
         }
+    }
+
+    // to find identifiers
+    private void identifier() {
+        while (isAlphaNumeric(peek()))
+            advance();
+
+        // check if the identifier is actually a reserved keyword
+        String text = source.substring(start, current);
+        TokenType type = keywords.get(text);
+
+        // if not a reserved keyword, then the type is an identifier
+        if (type == null)
+            type = IDENTIFIER;
+
+        addToken(type);
+    }
+
+    // private method to recognize alphabet characters or underscore
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z') ||
+                c == '_';
+    }
+
+    // private method to see if characters are alphanumeric
+    private boolean isAlphaNumeric(char c) {
+        return isAlpha(c) || isDigit(c);
     }
 
     // private method to recognize digits
@@ -127,10 +182,28 @@ class Scanner {
     }
 
     // private method to process a digit
+    // we first consume all of the first numbers, then consume a ".", then consume
+    // any following numbers after the dot
     private void number() {
         while (isDigit(peek()))
             advance();
 
+        // look for a fractional part
+        if (peek() == '.' && isDigit(peekNext())) {
+            // consume the "."
+            advance();
+            while (isDigit(peek()))
+                advance();
+        }
+
+        addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
+    }
+
+    // private method to check the character after the current character
+    private char peekNext() {
+        if (current + 1 >= source.length())
+            return '\0';
+        return source.charAt(current + 1);
     }
 
     // private method to call the analysis of a string
