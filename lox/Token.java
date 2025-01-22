@@ -1,4 +1,4 @@
-package lox;
+package lox.lox;
 
 // a token for which we can store info about a lexeme
 class Token {

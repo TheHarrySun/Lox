@@ -1,4 +1,4 @@
-package lox;
+package lox.lox;
 
 // this holds all the types of tokens
 enum TokenType {
