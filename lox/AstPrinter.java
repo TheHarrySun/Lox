@@ -1,5 +1,7 @@
 package lox.lox;
 
+// just a class that implements a printing process to visualize the 
+// syntax trees
 class AstPrinter implements Expr.Visitor<String> {
     String print(Expr expr) {
         return expr.accept(this);
