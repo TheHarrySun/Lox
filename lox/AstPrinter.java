@@ -1,4 +1,4 @@
-package lox.lox;
+package craftinginterpreters.lox;
 
 // just a class that implements a printing process to visualize the 
 // syntax trees

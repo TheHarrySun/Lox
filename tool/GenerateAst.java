@@ -1,4 +1,4 @@
-package lox.tool;
+package craftinginterpreters.tool;
 
 import java.io.IOException;
 import java.io.PrintWriter;

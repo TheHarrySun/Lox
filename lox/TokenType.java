@@ -1,4 +1,4 @@
-package lox.lox;
+package craftinginterpreters.lox;
 
 // this holds all the types of tokens
 enum TokenType {
