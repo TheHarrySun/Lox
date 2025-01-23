@@ -15,6 +15,15 @@ class Parser {
         this.tokens = tokens;
     }
 
+    // parse method that defines the initial parsing of the tokens
+    Expr parse() {
+        try {
+            return expression();
+        } catch (ParseError error) {
+            return null;
+        }
+    }
+
     // private method that checks if the current token has any of the given types
     // if so, then consume token and return true, else return false
     private boolean match(TokenType... types) {
@@ -69,6 +78,30 @@ class Parser {
     private ParseError error(Token token, String message) {
         Lox.error(token, message);
         return new ParseError();
+    }
+
+    // private method that keeps advancing until it finds a statement boundary
+    private void synchronize() {
+        advance();
+
+        while (!isAtEnd()) {
+            if (previous().type == SEMICOLON)
+                return;
+
+            switch (peek().type) {
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                    return;
+                default:
+                    advance();
+            }
+        }
     }
 
     // converting the grammar rules into code
@@ -158,5 +191,7 @@ class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
+
+        throw error(peek(), "Expect expression.");
     }
 }
