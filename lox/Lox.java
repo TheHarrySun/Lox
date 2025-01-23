@@ -73,4 +73,13 @@ public class Lox {
                 "[line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
+
+    // another error() function that outputs error at a given token location
+    static void error(Token token, String message) {
+        if (token.type == TokenType.EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
+    }
 }
