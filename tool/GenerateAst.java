@@ -8,7 +8,7 @@ import java.util.List;
 public class GenerateAst {
     public static void main(String[] args) throws IOException {
         // for input to this code, you can use the following path:
-        // "C:\Users\hsx92\OneDrive\Desktop\Coding Stuff\lox"
+        // "C:\Users\hsx92\OneDrive\Desktop\Coding Stuff\craftinginterpreters\lox"
         if (args.length != 1) {
             System.err.println("Usage: generate_ast <output directory>");
             System.exit(64);
@@ -20,13 +20,17 @@ public class GenerateAst {
                 "Grouping: Expr expression",
                 "Literal: Object value",
                 "Unary: Token operator, Expr right"));
+
+        defineAst(outputDir, "Stmt", Arrays.asList(
+                "Expression : Expr expression",
+                "Print : Expr expression"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package lox;");
+        writer.println("package craftinginterpreters.lox;");
         writer.println();
         writer.println("import java.util.List;");
         writer.println();
